@@ -12,7 +12,7 @@ export default function Create() {
   const handleScan = (data: any) => {
     if (data) {
       console.log(data);
-      // setScanResult(data);
+     setScanResult(data[0].rawValue);
     }
   };
 
@@ -61,6 +61,11 @@ export default function Create() {
             </div>
           )}
         </div>
+        {scanResult && (
+            <div className="w-[300px] h-auto bg-slate-300 rounded-lg p-5 mt-5">
+             <p>{scanResult}</p>
+            </div>
+          )}
       </div>
     </main>
   );
