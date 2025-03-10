@@ -24,27 +24,27 @@ export default function Create() {
   const toggleCamera = () => {
     setCameraActive(!cameraActive);
     if (!cameraActive) {
-      setScanResult(""); // Clear previous result when starting new scan
+      setScanResult(""); 
     }
   };
 
   return (
     <main className="w-full h-screen grid justify-center">
-      <div className="max-w-[800px] w-full h-full p-5 flex flex-col">
+      <div className="max-w-[800px] w-[100vw] h-[100vh] p-5 flex flex-col">
         <Link className="text-[20px] text-sky-300 underline mt-3 mb-6" href={"../"}>
           Home
         </Link>
         
         <h1 className="text-2xl font-bold mb-6">QR Code Scanner</h1>
         
-        <div className="flex flex-col gap-4">
+        <div className="">
           <button 
             onClick={toggleCamera}
-            className="bg-sky-500 hover:bg-sky-600 text-white font-medium py-2 px-4 rounded"
+            className="text-[20px] text-sky-300 underline mt-3 mb-6"
           >
-            {cameraActive ? "Stop Camera" : "Start Camera"}
+            {cameraActive ? "Quit scan" : "Start scan"}
           </button>
-          
+          <div className="w-full flex justify-center">
           {cameraActive && (
             <div className="w-full max-w-[500px] h-[300px] overflow-hidden border border-gray-300 rounded">
               <Scanner
@@ -54,6 +54,7 @@ export default function Create() {
               />
             </div>
           )}
+          </div>
           
           {error && (
             <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mt-4">
