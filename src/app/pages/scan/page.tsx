@@ -8,11 +8,20 @@ export default function Create() {
   const [scanResult, setScanResult] = useState("");
   const [cameraActive, setCameraActive] = useState(false);
   const [error, setError] = useState("");
+  const [isMatchingToday, setIsMatchingToday] = useState(false);
 
   const handleScan = (data: any) => {
     if (data) {
       console.log(data);
-     setScanResult(data[0].rawValue);
+      const rawValue = data[0].rawValue;
+      setScanResult(rawValue);
+      
+      // Check if the scanned value matches today's date
+      const today = new Date();
+      const formattedToday = today.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+      
+      // You can adjust this comparison based on your QR code date format
+      setIsMatchingToday(rawValue === formattedToday);
     }
   };
 
@@ -25,6 +34,7 @@ export default function Create() {
     setCameraActive(!cameraActive);
     if (!cameraActive) {
       setScanResult(""); 
+      setIsMatchingToday(false);
     }
   };
 
@@ -63,8 +73,16 @@ export default function Create() {
           )}
         </div>
         {scanResult && (
-            <div className="w-[300px] h-auto bg-slate-300 rounded-lg p-5 mt-5">
-             <p>{scanResult}</p>
+            <div className={`w-[300px] h-auto rounded-lg p-5 mt-5 ${isMatchingToday ? 'bg-green-500' : 'bg-red-500'} text-white`}>
+                <p className="text-md font-bold mt-2">
+               {isMatchingToday 
+                 ? "✅ QR code matches today's date!" 
+                 : "❌ QR code doesn't match today's date"}
+             </p>
+             <p>Ticket date: {scanResult}</p>
+             <p>
+               Today's date: {new Date().toISOString().split('T')[0]}
+             </p>
             </div>
           )}
       </div>

@@ -1,15 +1,37 @@
 'use client'
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import Output from "@/components/output";
 import QRCode from 'qrcode';
 
 export default function Create() {
     const [qrCodeUrl, setQrCodeUrl] = useState('');
-    const value = `ID: $ID  date: $date`;
+    const [formData, setFormData] = useState({
+        title: '',
+        description: '',
+        date: ''
+    });
+    const [isSubmitted, setIsSubmitted] = useState(false);
 
-    const generateQRCode = async (text: string) => {
+    const handleInputChange = (e: any) => {
+        const { id, value } = e.target;
+        setFormData({
+            ...formData,
+            [id === 'event-name' ? 'title' : id === 'event-description' ? 'description' : 'date']: value
+        });
+    };
+
+    const handleSubmit = (e: any) => {
+        e.preventDefault();
+        setIsSubmitted(true);
+        
+        // Create QR code content from form data
+        const qrValue = JSON.stringify(formData);
+        generateQRCode(qrValue);
+    };
+
+    const generateQRCode = async (text: any) => {
         try {
             const url = await QRCode.toDataURL(text, {
                 width: 400,
@@ -26,9 +48,12 @@ export default function Create() {
         }
     };
 
-    useState(() => {
-        generateQRCode(value);
-    },);
+    useEffect(() => {
+        if (isSubmitted) {
+            const qrValue = JSON.stringify(formData.date).replace(/^"|"$/g, '');;
+            generateQRCode(qrValue);
+        }
+    }, [formData, isSubmitted]);
 
     return (
         <main className="w-[100vw] h-[100vh] grid justify-center">
@@ -42,36 +67,60 @@ export default function Create() {
 
                 <h1 className="text-[40px] font-bold mt-5">Generate Ticket</h1>
 
-                <form className="max-w-sm mx-auto">
+                <form className="max-w-sm mx-auto" onSubmit={handleSubmit}>
                     <div className="mb-5">
-                        <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-whiten mt-5">Event name:</label>
-                        <input type="text" id="base-input" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
-                        
-                        <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white mt-5">Event date::</label>
-                        <input type="text" id="base-input" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+                        <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white mt-5">Event name:</label>
+                        <input 
+                            type="text" 
+                            id="event-name" 
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            value={formData.title}
+                            onChange={handleInputChange}
+                            required
+                        />
                         
                         <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white mt-5">Event description:</label>
-                        <input type="text" id="base-input" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
+                        <input 
+                            type="text" 
+                            id="event-description" 
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            value={formData.description}
+                            onChange={handleInputChange}
+                            required
+                        />
+                        
+                        <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white mt-5">Event date:</label>
+                        <input 
+                            type="date" 
+                            id="date" 
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            value={formData.date}
+                            onChange={handleInputChange}
+                            required
+                        />
                     
-                        <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white mt-5">Event description:</label>
-                        <input type="text" id="base-input" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-[300px] p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" />
-                    
-                    <input type="submit" placeholder="submit" className="text-[20px] text-sky-300 underline mt-3" />
+                        <button 
+                            type="submit" 
+                            className="bg-sky-500 hover:bg-sky-600 text-white font-medium rounded-lg text-sm px-5 py-2.5 mt-5 w-[300px]"
+                        >
+                            Generate QR Code
+                        </button>
                     </div>
                 </form>
 
                 <div className="flex-grow flex items-center justify-center">
-                    {/* {qrCodeUrl ? (
+                    {qrCodeUrl ? (
                         <Output
                             qrCodeUrl={qrCodeUrl}
-                            title="Peacock in concert" date="01/09/2025"
-                            desc="" />
+                            title={formData.title}
+                            date={formData.date}
+                            desc={formData.description}
+                        />
                     ) : (
-                        <div className="text-gray-500">Generating QR code...</div>
-                    )} */}
+                        <div className="text-gray-500">Enter event details and submit to generate QR code</div>
+                    )}
                 </div>
             </div>
         </main>
     );
 }
-
