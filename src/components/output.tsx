@@ -13,7 +13,7 @@ export default function Output({ qrCodeUrl, title, date, desc }: OutputProps) {
       <h1 className="text-[50px] font-black">{title}</h1>
       <h2 className="text-[30px] font-medium">{date}</h2>
 
-      <div className="bg-slate-300 w-full h-[250px]" />
+      <div className="bg-[url(/bg.jpg)] bg-cover w-full h-[250px]" />
       <h1 className="text-[40px] font-bold pt-8">Description</h1>
       <p className="text-[15px] pr-[200px]">{desc}</p>
 

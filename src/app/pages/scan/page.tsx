@@ -16,11 +16,9 @@ export default function Create() {
       const rawValue = data[0].rawValue;
       setScanResult(rawValue);
       
-      // Check if the scanned value matches today's date
       const today = new Date();
-      const formattedToday = today.toISOString().split('T')[0]; // Format: YYYY-MM-DD
+      const formattedToday = today.toISOString().split('T')[0]; 
       
-      // You can adjust this comparison based on your QR code date format
       setIsMatchingToday(rawValue === formattedToday);
     }
   };
@@ -76,8 +74,8 @@ export default function Create() {
             <div className={`w-[300px] h-auto rounded-lg p-5 mt-5 ${isMatchingToday ? 'bg-green-500' : 'bg-red-500'} text-white`}>
                 <p className="text-md font-bold mt-2">
                {isMatchingToday 
-                 ? "✅ QR code matches today's date!" 
-                 : "❌ QR code doesn't match today's date"}
+                 ? "✅ Ticket valid" 
+                 : "❌ Ticket not valid"}
              </p>
              <p>Ticket date: {scanResult}</p>
              <p>
